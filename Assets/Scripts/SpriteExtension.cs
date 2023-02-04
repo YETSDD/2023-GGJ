@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpriteExtension : MonoBehaviour
+public static class SpriteExtension
 {
-    // Start is called before the first frame update
-    void Start()
+    public static void ChangeV(this SpriteRenderer renderer, int value)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        var color = renderer.color;
+        Color.RGBToHSV(color, out var h, out var s, out var v);
+        v += value;
+        v = Mathf.Clamp(v, 0, 255);
+        color = Color.HSVToRGB(h, s, v);
+        renderer.color = color;
     }
 }
