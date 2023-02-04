@@ -8,12 +8,12 @@ public static class MapHelper
     {
         if (map == null || map.Count == 0 || map[0].Count == 0)
         {
-            Debug.LogError("Invalid Map");
+            Debug.LogWarning("Invalid Map");
             return null;
         }
         if (x < 0 || x > map[0].Count - 1 || y < 0 || y > map.Count - 1)
         {
-            Debug.LogError("Invalid Index");
+            Debug.LogWarning("Invalid Index");
             return null;
         }
         return map[x][y];

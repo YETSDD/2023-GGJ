@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class GridBase
 {
+    public EntityBase Owner = null;
     public int PosX;
     public int PosY;
     public GridBase(int x, int y)
@@ -15,5 +16,12 @@ public class GridBase
         PosY = y;
     }
 
+    public bool Visible = false;
 
+    public bool Movable = true;
+
+    public virtual void Trigger()
+    {
+
+    }
 }
