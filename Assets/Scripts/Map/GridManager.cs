@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GridType
+{
+    Soil,
+    Oil,
+    Rock,
+    Fire,
+    Water,
+    /// <summary>
+    /// 答辩
+    /// </summary>
+    Manure
+}
 public class GridManager
 {
     private static GridManager instance;
@@ -16,6 +28,8 @@ public class GridManager
             return instance;
         }
     }
+    public readonly Dictionary<Direction, Vector2Int> DirectVector = new Dictionary<Direction, Vector2Int>() { { Direction.Left, new Vector2Int(-1, 0) }, { Direction.Right, new Vector2Int(1, 0) }, { Direction.Up, new Vector2Int(0, 1) }, { Direction.Down, new Vector2Int(0, -1) } };
+
     const int size = 1;
 
     public int Height;
@@ -31,6 +45,7 @@ public class GridManager
     /// </summary>
     public void Initialize(int x, int y)
     {
+        //TODO 随机生成算法
         Width = x;
         Height = y;
         Map = new List<List<GridBase>>();
@@ -45,6 +60,15 @@ public class GridManager
         }
     }
 
+    private GridBase RandomGrid(int x, int y)
+    {
+        var random = Random.Range(0, 6);
+        switch (random)
+        {
+
+        }
+        return null;
+    }
     /// <summary>
     /// 距离中心点的坐标
     /// </summary>
@@ -68,5 +92,21 @@ public class GridManager
     public GridBase GetRightGrid(GridBase grid)
     {
         return GetGrid(grid.PosX + 1, grid.PosY);
+    }
+
+    /// <summary>
+    /// 来个标记数组 TODO？
+    /// </summary>
+    /// <returns></returns>
+    public GridBase GetRandomGeneratePoint()
+    {
+        GridBase result = null;
+        while (result == null || result.Owner != null)
+        {
+            int randomX = Random.Range(0, Width);
+            int randomY = Random.Range(0, Height);
+            result = GetGrid(randomX, randomY);
+        }
+        return result;
     }
 }

@@ -9,7 +9,9 @@ public class VisualizeManager : MonoBehaviour
 {
     public static VisualizeManager Instance;
     public GameObject GridObject;
-    public Transform GeneratePoint;
+    public GameObject BodyObject;
+    public Transform GridGeneratePoint;
+    public Transform BodyGeneratePoint;
 
     private int midX;
     private int midY;
@@ -19,6 +21,7 @@ public class VisualizeManager : MonoBehaviour
 
     public void Initialize(int x, int y)
     {
+        UpdateEntity();
         UpdateGrid(x, y);
     }
 
@@ -37,6 +40,47 @@ public class VisualizeManager : MonoBehaviour
 
     void Update()
     {
+    }
+
+    public void UpdateEntity()
+    {
+        bodyPool.ForEach(item => item.SetActive(false));
+        foreach (var entity in GameManager.Instance.AllEntities)
+        {
+            var head = entity.Body.Head;
+            //判断成环 TODO
+            Queue<CustomNode<GridBase>> q = new Queue<CustomNode<GridBase>>();
+            q.Enqueue(head);
+            //GameObject preBody;
+            while (q.Count > 0)
+            {
+                var node = q.Dequeue();
+                foreach (var pre in node.Pres)
+                {
+                    q.Enqueue(pre);
+                }
+                if (node.Data != null)
+                {
+                    if (node.Data.Owner != null)
+                    {
+                        if (InScreen(node.Data))
+                        {
+                            var worldPos = GridManager.Instance.GetPos(node.Data);
+                            var body = GetBodyObject();
+                            body.transform.position = worldPos;
+                            //转向 
+                            var angle = node.GetDirection();
+                            if (angle == -1)
+                            {
+                                //特殊处理 用圆形？TODO
+                            }
+                            body.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     public void UpdateGrid(int x, int y)
@@ -73,6 +117,22 @@ public class VisualizeManager : MonoBehaviour
         }
     }
 
+    private bool InScreen(GridBase grid)
+    {
+        var worldPos = GridManager.Instance.GetPos(grid);
+        var midGrid = GridManager.Instance.GetGrid(midX, midY);
+        if (midGrid == null) return false;
+
+        var midPos = GridManager.Instance.GetPos(midGrid);
+
+        //以步数算距离
+        if (Mathf.Abs(midPos.x - worldPos.x) > width / 2 || Mathf.Abs(midPos.y - worldPos.y) > height / 2)
+        {
+            return false;
+        }
+        return true;
+    }
+
     private bool InScreen(GameObject obj)
     {
         var midGrid = GridManager.Instance.GetGrid(midX, midY);
@@ -82,13 +142,13 @@ public class VisualizeManager : MonoBehaviour
         var objPos = obj.transform.position;
 
         //以步数算距离
-        if (Mathf.Abs(midPos.x - objPos.x) + Mathf.Abs(midPos.y - objPos.y) > width / 2 + height / 2)
+        if (Mathf.Abs(midPos.x - objPos.x) > width / 2 || Mathf.Abs(midPos.y - objPos.y) > +height / 2)
         {
             return false;
         }
-        return false;
+        return true;
     }
-    #region Pool
+    #region GridPool
     private List<GameObject> gridPool = new List<GameObject>();
     private GameObject GetGridObject()
     {
@@ -102,7 +162,7 @@ public class VisualizeManager : MonoBehaviour
     }
     private GameObject CreateObject()
     {
-        var obj = GameObject.Instantiate(GridObject, GeneratePoint);
+        var obj = GameObject.Instantiate(GridObject, GridGeneratePoint);
         gridPool.Add(obj);
         return obj;
     }
@@ -110,6 +170,26 @@ public class VisualizeManager : MonoBehaviour
     private void RecycleObject(GameObject obj)
     {
         obj.SetActive(false);
+    }
+    #endregion
+
+    #region bodyPool
+    private List<GameObject> bodyPool = new List<GameObject>();
+    private GameObject GetBodyObject()
+    {
+        var result = bodyPool.Find(item => !item.activeInHierarchy);
+        if (result == null)
+        {
+            result = CreateBodyObject();
+        }
+        result.SetActive(true);
+        return result;
+    }
+    private GameObject CreateBodyObject()
+    {
+        var obj = GameObject.Instantiate(BodyObject, BodyGeneratePoint);
+        bodyPool.Add(obj);
+        return obj;
     }
     #endregion
 }

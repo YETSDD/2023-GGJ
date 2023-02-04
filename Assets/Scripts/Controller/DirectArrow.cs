@@ -12,7 +12,6 @@ public class DirectArrow : MonoBehaviour, IController
     public GameObject Down;
     private Dictionary<Direction, GameObject> ArrowObject;
 
-    readonly Dictionary<Direction, Vector2Int> directVector = new Dictionary<Direction, Vector2Int>() { { Direction.Left, new Vector2Int(-1, 0) }, { Direction.Right, new Vector2Int(1, 0) }, { Direction.Up, new Vector2Int(0, 1) }, { Direction.Down, new Vector2Int(0, -1) } };
     public PlayerController Controller => GetComponent<PlayerController>();
 
     private Direction currentDirection;
@@ -35,7 +34,7 @@ public class DirectArrow : MonoBehaviour, IController
 
         int x = GameManager.Instance.Player.HeadGrid.PosX;
         int y = GameManager.Instance.Player.HeadGrid.PosY;
-        foreach (var pair in directVector)
+        foreach (var pair in GridManager.Instance.DirectVector)
         {
             var grid = GridManager.Instance.GetGrid(x + pair.Value.x, y + pair.Value.y);
             if (grid == null)
@@ -46,7 +45,7 @@ public class DirectArrow : MonoBehaviour, IController
             else
             {
                 //TODO ≥‘»À
-                if (grid.Owner != null)
+                if (!grid.CanMove())
                 {
                     cancelDirection.Add(pair.Key);
                     continue;
@@ -80,29 +79,30 @@ public class DirectArrow : MonoBehaviour, IController
     {
         if (!cancelDirection.Contains(currentDirection))
         {
-            TryMoveTo(directVector[currentDirection]);
+            TryMoveTo(currentDirection);
         }
 
         Controller.SwitchTo(ControllState.ChooseList);
 
     }
 
-    private void TryMoveTo(Vector2Int vec)
+    private void TryMoveTo(Direction direct)
     {
         var player = GameManager.Instance.Player;
-        var currentGrid = player.Body.Head.Data;
-        var currentX = currentGrid.PosX;
-        var currentY = currentGrid.PosY;
-        var targetGrid = GridManager.Instance.GetGrid(currentX + vec.x, currentY + vec.y);
-        if (targetGrid == null)
-        {
-            Debug.LogWarning($"Invalid Index {currentX + vec.x}, {currentY + vec.y}");
-            return;
-        }
+        var vec = GridManager.Instance.DirectVector[direct];
+        //var currentGrid = player.Body.Head.Data;
+        //var currentX = currentGrid.PosX;
+        //var currentY = currentGrid.PosY;
+        //var targetGrid = GridManager.Instance.GetGrid(currentX + vec.x, currentY + vec.y);
+        //if (targetGrid == null)
+        //{
+        //    Debug.LogWarning($"Invalid Index {currentX + vec.x}, {currentY + vec.y}");
+        //    return;
+        //}
 
-        var canMove = player.TryMoveTo(targetGrid);
+        var moveSucess = player.TryMoveTo(direct);
 
-        if (canMove)
+        if (moveSucess)
         {
             Controller.MoveTo(vec);
         }

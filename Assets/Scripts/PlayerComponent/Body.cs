@@ -24,7 +24,5 @@ public class Body
             //自己吃自己
             return;
         }
-
-
     }
 }

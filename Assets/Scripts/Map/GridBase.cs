@@ -10,6 +10,7 @@ public class GridBase
     public EntityBase Owner = null;
     public int PosX;
     public int PosY;
+    public Color BaseColor;
     public GridBase(int x, int y)
     {
         PosX = x;
@@ -19,9 +20,12 @@ public class GridBase
     public bool Visible = false;
 
     public bool Movable = true;
-
-    public virtual void Trigger()
+    public bool CanMove()
     {
-
+        return Movable && Owner == null;
+    }
+    public virtual void Trigger(EntityBase entity)
+    {
+        Visible = true;
     }
 }

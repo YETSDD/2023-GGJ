@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     public Player Player;
 
+    public List<EntityBase> AllEntities;
+
     State state = State.Menu;
     public int StartPosX;
     public int StartPosY;
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        AllEntities = new List<EntityBase>();
     }
 
     void Start()
@@ -58,10 +61,14 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        AllEntities.Clear();
         round = 0;
         state = State.Gaming;
         Player = new Player(GridManager.Instance.GetGrid(StartPosX, StartPosY));
-        PlayerController controller = GameObject.Instantiate(ControllerPrefab, EntityParent);
+        AllEntities.Add(Player);
+        AgentManager.Instance.Initialize();
+        AllEntities.AddRange(AgentManager.Instance.GetAllAgents());
+        PlayerController controller = GameObject.Instantiate(ControllerPrefab);
         Camera.Follow = controller.transform;
         controller.Init(sizeX / 2, sizeY / 2);
     }
@@ -69,6 +76,8 @@ public class GameManager : MonoBehaviour
 
     public void NextRound()
     {
+        AgentManager.Instance.UpdateAgent();
+        VisualizeManager.Instance.UpdateEntity();
         VisualizeManager.Instance.UpdateGrid(Player.HeadGrid.PosX, Player.HeadGrid.PosY);
         round++;
         Debug.Log("Round:" + round);

@@ -18,4 +18,22 @@ public static class MapHelper
         }
         return map[x][y];
     }
+
+    public static float GetDirection(this CustomNode<GridBase> node)
+    {
+        var grid = node.Data;
+        if (grid == null || node.Next == null)
+        {
+            Debug.LogWarning("Empty");
+            return -1;
+        }
+        var nextGrid = node.Next.Data;
+        if (nextGrid == null)
+        {
+            Debug.LogWarning("Empty");
+            return -1;
+        }
+        Vector2Int dis = new Vector2Int(nextGrid.PosX - grid.PosX, nextGrid.PosY - grid.PosY);
+        return Vector2.SignedAngle(new Vector2Int(0, 1), dis);
+    }
 }
