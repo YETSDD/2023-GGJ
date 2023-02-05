@@ -93,7 +93,7 @@ public class VisualizeManager : MonoBehaviour
                                 var body = GetBodyObject();
                                 body.transform.position = worldPos;
                                 body.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-                                if (!entity.Alive)
+                                if (!entity.Alive || entity.Rooted)
                                 {
                                     body.GetComponent<SpriteRenderer>().color = Color.black;
                                 }
@@ -111,7 +111,7 @@ public class VisualizeManager : MonoBehaviour
                                     line.positionCount = 2;
                                     var start = GridManager.Instance.GetPos(pre.Data);
                                     line.SetPositions(new Vector3[2] { start, worldPos });
-                                    if (!entity.Alive)
+                                    if (!entity.Alive || entity.Rooted)
                                     {
                                         line.startColor = Color.black;
                                     }

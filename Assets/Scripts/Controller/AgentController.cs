@@ -41,7 +41,10 @@ public class AgentController
         {
             var moveSuccess = Player.TryMoveTo(direct);
         }
-
+        else
+        {
+            Player.Alive = false;
+        }
     }
 
     private Direction RandomChoose(List<Direction> canMoveDirection)

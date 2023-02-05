@@ -28,7 +28,9 @@ public class GridBase
     private bool canTrigger = true;
     public bool CanTrigger()
     {
-        return canTrigger;
+        if (!canTrigger) return false;
+
+        return (Owner == null || (Owner is Player player && !player.Rooted));
     }
     public virtual void Trigger(EntityBase entity)
     {

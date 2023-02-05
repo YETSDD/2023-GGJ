@@ -127,6 +127,34 @@ public class GridManager
         return Map.GetGrid(y, x);
     }
 
+    public void ChangeGrid(int x, int y, GridType type)
+    {
+        if (Map == null || Map.Count == 0 || Map[0].Count == 0)
+        {
+            Debug.LogWarning("Invalid Map");
+            return;
+        }
+        if (x < 0 || x > Map[0].Count - 1 || y < 0 || y > Map.Count - 1)
+        {
+            Debug.LogWarning("Invalid Index");
+            return;
+        }
+        GridBase grid;
+        switch (type)
+        {
+            case GridType.Soil: grid = new SoilGrid(x, y); break;
+            case GridType.Water: grid = new WaterGrid(x, y); break;
+            case GridType.Fire: grid = new FireGrid(x, y); break;
+            case GridType.Rock: grid = new RockGrid(x, y); break;
+            case GridType.Oil: grid = new OilGrid(x, y); break;
+            case GridType.Manure: grid = new ManureGrid(x, y); break;
+            case GridType.Eye: grid = new EyeGrid(x, y); break;
+            case GridType.End: grid = new EndGrid(x, y); break;
+            default: grid = new SoilGrid(x, y); break;
+        }
+        Map[x][y] = grid;
+    }
+
     public GridBase GetRightGrid(GridBase grid)
     {
         return GetGrid(grid.PosX + 1, grid.PosY);

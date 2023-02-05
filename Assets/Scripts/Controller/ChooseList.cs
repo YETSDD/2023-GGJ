@@ -14,7 +14,7 @@ public enum Direction
 public class ChooseList : MonoBehaviour, IController
 {
     public PlayerController Controller => GetComponent<PlayerController>();
-
+    const int lookRadius = 3;
     public GameObject Left;
     public GameObject Right;
     public GameObject Up;
@@ -116,9 +116,9 @@ public class ChooseList : MonoBehaviour, IController
         var currentGrid = GameManager.Instance.Player.HeadGrid;
         int currentX = currentGrid.PosX;
         int currentY = currentGrid.PosY;
-        for (int i = -1; i <= 1; i++)
+        for (int i = -lookRadius; i <= lookRadius; i++)
         {
-            for (int j = -1; j <= 1; j++)
+            for (int j = -lookRadius; j <= lookRadius; j++)
             {
                 var grid = GridManager.Instance.GetGrid(currentX + i, currentY + j);
                 if (grid != null)

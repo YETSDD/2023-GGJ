@@ -10,7 +10,7 @@ public class EndGrid : GridBase
     {
         BaseColor = Color.gray;
         Movable = false;
-        AvailableTriggerTimes = 4;
+        AvailableTriggerTimes = 5;
     }
 
     public override void Trigger(EntityBase entity)
@@ -29,12 +29,17 @@ public class EndGrid : GridBase
         {
             if (entity is Player player)
             {
+                GridManager.Instance.ChangeGrid(PosX, PosY, GridType.Soil);
+                player.Rooted = true;
+                GridManager.Instance.EndGrids.Remove(this);
                 if (player == GameManager.Instance.Player)
                 {
-                    player.Rooted = true;
                     GameManager.Instance.NewGeneration(this);
                 }
-
+                else
+                {
+                    AgentManager.Instance.AddAgent(this);
+                }
             }
         }
     }

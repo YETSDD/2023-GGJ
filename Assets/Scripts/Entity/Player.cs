@@ -36,6 +36,10 @@ public class Player : EntityBase
         {
             grid.Trigger(this);
         }
+        else
+        {
+            Debug.Log($"{grid.GetType().Name} Cannot Trigger");
+        }
         bool canMove = grid.CanMove();
         if (canMove)
         {
@@ -44,7 +48,7 @@ public class Player : EntityBase
                 //½áºÏ
                 if (grid == grid.Owner.HeadGrid)
                 {
-                    if (grid.Owner is Player target && (this == GameManager.Instance.Player || target == GameManager.Instance.Player))
+                    if (grid.Owner is Player target && (this == GameManager.Instance.Player || target == GameManager.Instance.Player) && !(grid.Owner as Player).Rooted)
                     {
                         this.Rooted = true;
                         target.Rooted = true;
@@ -74,6 +78,7 @@ public class Player : EntityBase
                         target.Body = null;
                         target.Life = 0;
                         GameManager.Instance.AllPlayer.Remove(target);
+                        //VisualizeManager.Instance.UpdateEntity();
                         UIManager.Instance.ClearGrid();
                     }
 

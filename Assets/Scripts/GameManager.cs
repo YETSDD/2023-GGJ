@@ -104,8 +104,8 @@ public class GameManager : MonoBehaviour
         VirtualCamera2.Follow = controller.transform;
         controller.Init(StartPosX, StartPosX);
         VisualizeManager.Instance.SetSize();
-        VisualizeManager.Instance.UpdateEntity();
         VisualizeManager.Instance.UpdateGrid(StartPosX, StartPosY);
+        VisualizeManager.Instance.UpdateEntity();
     }
 
 
@@ -114,8 +114,8 @@ public class GameManager : MonoBehaviour
         AgentManager.Instance.UpdateAgent();
 
         if (CheckDead()) { GameOver(); return; }
-        VisualizeManager.Instance.UpdateEntity();
         VisualizeManager.Instance.UpdateGrid(Player.HeadGrid.PosX, Player.HeadGrid.PosY);
+        VisualizeManager.Instance.UpdateEntity();
         round++;
         Debug.Log("Round:" + round);
 
@@ -159,10 +159,10 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        //TODO 处理
         VisualizeManager.Instance.SetSize(50, 50);
-        VisualizeManager.Instance.UpdateEntity();
         VisualizeManager.Instance.UpdateGrid(Player.HeadGrid.PosX, Player.HeadGrid.PosY);
+        VisualizeManager.Instance.UpdateEntity();
+
         VirtualCamera1.gameObject.SetActive(false);
         VirtualCamera2.gameObject.SetActive(true);
         //StartCoroutine(CameraUp(count))
@@ -195,6 +195,31 @@ public class GameManager : MonoBehaviour
 
     public void NewGeneration(GridBase grid)
     {
+        List<GridBase> canGenerateGrid = GetGenerateGrids(grid);
+
+        if (canGenerateGrid.Count == 0)
+        {
+            Debug.Log($"----Generate Fail----");
+            GameManager.Instance.GameOver();
+            return;
+        }
+
+        var random = Random.Range(0, canGenerateGrid.Count);
+        var choosenGrid = canGenerateGrid[random];
+
+        var startPosX = choosenGrid.PosX;
+        var startPosY = choosenGrid.PosY;
+        Debug.Log($"----Generate New({startPosX},{startPosY})----");
+
+        Player = new Player(GridManager.Instance.GetGrid(startPosX, startPosY));
+        AllPlayer.Add(Player);
+
+        VisualizeManager.Instance.Initialize(startPosX, startPosY);
+        controller.MoveTo();
+    }
+
+    public static List<GridBase> GetGenerateGrids(GridBase grid)
+    {
         //产生新的个体
         var gridPosX = grid.PosX;
         var gridPosY = grid.PosY;
@@ -225,24 +250,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        if (canGenerateGrid.Count == 0)
-        {
-            Debug.Log($"----Generate Fail----");
-            GameManager.Instance.GameOver();
-            return;
-        }
-
-        var random = Random.Range(0, canGenerateGrid.Count);
-        var choosenGrid = canGenerateGrid[random];
-
-        var startPosX = choosenGrid.PosX;
-        var startPosY = choosenGrid.PosY;
-        Debug.Log($"----Generate New({startPosX},{startPosY})----");
-
-        Player = new Player(GridManager.Instance.GetGrid(startPosX, startPosY));
-        AllPlayer.Add(Player);
-
-        VisualizeManager.Instance.Initialize(startPosX, startPosY);
-        controller.MoveTo();
+        canGenerateGrid.Remove(grid);
+        return canGenerateGrid;
     }
 }

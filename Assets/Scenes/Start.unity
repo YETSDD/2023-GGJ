@@ -1058,6 +1058,98 @@ Transform:
   m_Father: {fileID: 1114623828}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1605863171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1605863174}
+  - component: {fileID: 1605863173}
+  - component: {fileID: 1605863172}
+  m_Layer: 0
+  m_Name: GameManager (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1605863172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605863171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa6885da1ea77c44da9d69d284edaa36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GridObject: {fileID: 2703876784014249980, guid: bfcb6502bac44f84788daabbc5b3c066, type: 3}
+  BodyObject: {fileID: 3211576684381223393, guid: d068e91b2956d584ca05eaac7573989e, type: 3}
+  LineObject: {fileID: 4106212107924055584, guid: c6ec199cf07c2cf43a448e0dead834c9, type: 3}
+  HeadObject: {fileID: 8120796428940757192, guid: 6561b6fdd389c0d488d3f31edec19cd9, type: 3}
+  GridGeneratePoint: {fileID: 391533565}
+  BodyGeneratePoint: {fileID: 159520908}
+--- !u!114 &1605863173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605863171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fdad3af546622442857ab0487314c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ControllerPrefab: {fileID: -5612104675438575107, guid: aaeed7566fca79d40b1e969466a134fb, type: 3}
+  EntityParent: {fileID: 159520908}
+  VirtualCamera1: {fileID: 1514789471}
+  VirtualCamera2: {fileID: 699749552}
+  sizeX: 50
+  sizeY: 50
+  GenerateModels:
+  - GridType: 6
+    Weight: 7
+  - GridType: 1
+    Weight: 15
+  - GridType: 2
+    Weight: 50
+  - GridType: 3
+    Weight: 5
+  - GridType: 4
+    Weight: 20
+  - GridType: 5
+    Weight: 2
+  - GridType: 7
+    Weight: 1
+  - GridType: 0
+    Weight: 100
+  AgentCount: 7
+  round: 0
+  State: 0
+  StartPosX: 0
+  StartPosY: 0
+  ClearAll: 1
+--- !u!4 &1605863174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605863171}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1781303577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1209,8 +1301,8 @@ MonoBehaviour:
   EntityParent: {fileID: 159520908}
   VirtualCamera1: {fileID: 1514789471}
   VirtualCamera2: {fileID: 699749552}
-  sizeX: 1000
-  sizeY: 1000
+  sizeX: 11
+  sizeY: 11
   GenerateModels:
   - GridType: 6
     Weight: 7
@@ -1225,10 +1317,10 @@ MonoBehaviour:
   - GridType: 5
     Weight: 2
   - GridType: 7
-    Weight: 1
+    Weight: 10000
   - GridType: 0
     Weight: 150
-  AgentCount: 5000
+  AgentCount: 3
   round: 0
   State: 0
   StartPosX: 0
