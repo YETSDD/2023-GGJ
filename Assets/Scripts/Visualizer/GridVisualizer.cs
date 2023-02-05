@@ -20,10 +20,7 @@ public class GridVisualizer : MonoBehaviour
     public void Show(GridBase grid)
     {
         Color.RGBToHSV(grid.BaseColor, out var h, out var s, out var v);
-        if (!grid.Visible)
-        {
-            v = 0;
-        }
+
 
         //if (!grid.Movable)
         //{
@@ -39,11 +36,15 @@ public class GridVisualizer : MonoBehaviour
         {
             //h = 0.5f;
             //s = 1f;
-            //v = 0.5f;
+            v = 1f;
+        }
+
+        if (!grid.Visible)
+        {
+            v = 0;
         }
 
         Color color = Color.HSVToRGB(h, s, v);
-
         spriteRenderer.color = color;
     }
 }

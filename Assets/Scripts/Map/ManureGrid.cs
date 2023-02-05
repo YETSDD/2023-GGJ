@@ -6,7 +6,7 @@ public class ManureGrid : GridBase
 {
     public ManureGrid(int x, int y) : base(x, y)
     {
-        BaseColor = new Color(237, 153, 43);
+        BaseColor = new Color(255, 60, 31);
 
     }
 

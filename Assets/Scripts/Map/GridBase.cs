@@ -36,6 +36,7 @@ public class GridBase
         Visible = true;
         if (entity == GameManager.Instance.Player)
         {
+            UIManager.Instance.UpdateGrid(this);
             Debug.Log($"Trigger {this.GetType().Name}");
         }
     }

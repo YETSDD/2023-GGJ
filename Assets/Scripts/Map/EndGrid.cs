@@ -15,6 +15,8 @@ public class EndGrid : GridBase
 
     public override void Trigger(EntityBase entity)
     {
+        //гажїСЫ
+        if (this.Owner != null) { return; }
         base.Trigger(entity);
 
         count--;

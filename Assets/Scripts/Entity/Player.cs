@@ -50,6 +50,7 @@ public class Player : EntityBase
                         target.Rooted = true;
                         GameManager.Instance.NewGeneration(grid);
 
+                        UIManager.Instance.ClearGrid();
                         //TODO Á£×ÓÌØÐ§
                     }
                 }
@@ -73,6 +74,7 @@ public class Player : EntityBase
                         target.Body = null;
                         target.Life = 0;
                         GameManager.Instance.AllPlayer.Remove(target);
+                        UIManager.Instance.ClearGrid();
                     }
 
                 }

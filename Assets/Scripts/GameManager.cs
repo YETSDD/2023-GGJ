@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public PlayerController ControllerPrefab;
     public Transform EntityParent;
-    public Cinemachine.CinemachineVirtualCamera Camera;
+    public Cinemachine.CinemachineVirtualCamera VirtualCamera1;
+    public Cinemachine.CinemachineVirtualCamera VirtualCamera2;
     public int sizeX = 100;
     public int sizeY = 100;
 
@@ -49,14 +50,15 @@ public class GameManager : MonoBehaviour
         StartPosX = sizeX / 2;
         StartPosY = sizeY / 2;
         GridManager.Instance.Initialize(sizeX, sizeY);
-        VisualizeManager.Instance.Initialize(sizeX / 2, sizeY / 2);
+        VisualizeManager.Instance.Initialize(StartPosX, StartPosY);
     }
 
+    int waitFrame = 60;
     void Update()
     {
-
         if (State == State.Menu)
         {
+
             UIManager.Instance.Menu();
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -70,11 +72,15 @@ public class GameManager : MonoBehaviour
         else if (State == State.Result)
         {
             UIManager.Instance.Result();
-
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (waitFrame > 0) { waitFrame--; }
+            else
             {
-                Clear();
-                State = State.Menu;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Clear();
+                    State = State.Menu;
+                    waitFrame = 60;
+                }
             }
         }
     }
@@ -90,8 +96,16 @@ public class GameManager : MonoBehaviour
         AgentManager.Instance.Initialize();
         AllPlayer.AddRange(AgentManager.Instance.GetAllAgents());
         controller = GameObject.Instantiate(ControllerPrefab);
-        Camera.Follow = controller.transform;
-        controller.Init(sizeX / 2, sizeY / 2);
+        //VirtualCamera1.m_Lens.OrthographicSize = 5;
+
+        VirtualCamera1.gameObject.SetActive(true);
+        VirtualCamera2.gameObject.SetActive(false);
+        VirtualCamera1.Follow = controller.transform;
+        VirtualCamera2.Follow = controller.transform;
+        controller.Init(StartPosX, StartPosX);
+        VisualizeManager.Instance.SetSize();
+        VisualizeManager.Instance.UpdateEntity();
+        VisualizeManager.Instance.UpdateGrid(StartPosX, StartPosY);
     }
 
 
@@ -146,9 +160,22 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         //TODO ¥¶¿Ì
+        VisualizeManager.Instance.SetSize(50, 50);
+        VisualizeManager.Instance.UpdateEntity();
+        VisualizeManager.Instance.UpdateGrid(Player.HeadGrid.PosX, Player.HeadGrid.PosY);
+        VirtualCamera1.gameObject.SetActive(false);
+        VirtualCamera2.gameObject.SetActive(true);
+        //StartCoroutine(CameraUp(count))
+        //VirtualCamera1.m_Lens.OrthographicSize = 20;
         State = State.Result;
 
         Debug.Log("GameOver");
+    }
+
+    IEnumerator CameraUp(int count)
+    {
+        yield return new WaitForEndOfFrame();
+
     }
 
     public bool ClearAll = false;
@@ -190,7 +217,7 @@ public class GameManager : MonoBehaviour
             {
                 for (int j = -2; j <= 2; j++)
                 {
-                    var temp = GridManager.Instance.GetGrid(i, j);
+                    var temp = GridManager.Instance.GetGrid(gridPosX + i, gridPosY + j);
                     if (temp != null && temp.Owner == null)
                     {
                         canGenerateGrid.Add(temp);
@@ -201,6 +228,7 @@ public class GameManager : MonoBehaviour
         if (canGenerateGrid.Count == 0)
         {
             Debug.Log($"----Generate Fail----");
+            GameManager.Instance.GameOver();
             return;
         }
 

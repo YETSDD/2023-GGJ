@@ -19,8 +19,16 @@ public class VisualizeManager : MonoBehaviour
     private int midX;
     private int midY;
 
-    const int width = 11;
-    const int height = 11;
+    const int baseSizeX = 11;
+    const int baseSizeY = 11;
+
+    public void SetSize(int x = baseSizeX, int y = baseSizeY)
+    {
+        width = x;
+        height = y;
+    }
+    private int width = 11;
+    private int height = 11;
 
     public void Initialize(int x, int y)
     {

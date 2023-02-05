@@ -31,6 +31,10 @@ public class GridManager
         }
     }
     public readonly Dictionary<Direction, Vector2Int> DirectVector = new Dictionary<Direction, Vector2Int>() { { Direction.Left, new Vector2Int(-1, 0) }, { Direction.Right, new Vector2Int(1, 0) }, { Direction.Up, new Vector2Int(0, 1) }, { Direction.Down, new Vector2Int(0, -1) } };
+    /// <summary>
+    /// 可以来个字典 TODO
+    /// </summary>
+    public List<EndGrid> EndGrids;
 
     const int size = 1;
 
@@ -50,13 +54,19 @@ public class GridManager
         //TODO 随机生成算法
         Width = x;
         Height = y;
+        EndGrids = new List<EndGrid>();
         Map = new List<List<GridBase>>();
         for (int i = 0; i < Height; i++)
         {
             var line = new List<GridBase>();
             for (int j = 0; j < Width; j++)
             {
-                line.Add(RandomGrid(j, i));
+                var grid = RandomGrid(j, i);
+                if (grid is EndGrid end)
+                {
+                    EndGrids.Add(end);
+                }
+                line.Add(grid);
             }
             Map.Add(line);
         }
@@ -82,7 +92,6 @@ public class GridManager
                 choose = model.GridType;
                 break;
             }
-
         }
 
         switch (choose)

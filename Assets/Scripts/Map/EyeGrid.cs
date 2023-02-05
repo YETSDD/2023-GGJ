@@ -14,6 +14,10 @@ public class EyeGrid : GridBase
     public override void Trigger(EntityBase entity)
     {
         base.Trigger(entity);
+        if (entity is Player player)
+        {
+            player.LookCount = 1;
+        }
         //展示周围25格
         for (int i = -radius; i <= radius; i++)
         {

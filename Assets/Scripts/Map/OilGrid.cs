@@ -6,6 +6,7 @@ public class OilGrid : GridBase
 {
     public OilGrid(int x, int y) : base(x, y)
     {
+        BaseColor = new Color(150, 181, 0);
     }
 
     public override void Trigger(EntityBase entity)

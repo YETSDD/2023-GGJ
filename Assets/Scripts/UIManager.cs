@@ -14,12 +14,14 @@ public class UIManager : MonoBehaviour
     public Image Eye;
     public Image emoji;
     public Image mark;
+    public Image LastTriggerGrid;
 
     public Sprite EmptyX;
     public Sprite HalfX;
     public Sprite FullX;
 
     public Text Tree;
+    public GameObject PressSpaceHint;
 
     private void Awake()
     {
@@ -44,15 +46,20 @@ public class UIManager : MonoBehaviour
             Eye.gameObject.SetActive(player.LookCount > 0);
         }
     }
+
     public void Menu()
     {
+        StopAllCoroutines();
+        PressSpaceHint.SetActive(true);
         HpBar.gameObject.SetActive(false);
         Hint.SetActive(true);
         mark.gameObject.SetActive(false);
+        LastTriggerGrid.color = new Color(0, 0, 0, 0);
     }
 
     public void Gaming()
     {
+        PressSpaceHint.SetActive(false);
         HpBar.gameObject.SetActive(true);
         Hint.SetActive(true);
         mark.gameObject.SetActive(true);
@@ -63,6 +70,25 @@ public class UIManager : MonoBehaviour
         HpBar.gameObject.SetActive(false);
         Hint.SetActive(false);
         mark.gameObject.SetActive(false);
+        StartCoroutine(ShowHint());
+    }
+
+    IEnumerator ShowHint()
+    {
+        yield return new WaitForSeconds(5f);
+        PressSpaceHint.SetActive(true);
+    }
+
+    public void UpdateGrid(GridBase grid)
+    {
+        Color.RGBToHSV(grid.BaseColor, out var h, out var s, out var v);
+        v = 1f;
+        Color color = Color.HSVToRGB(h, s, v);
+        LastTriggerGrid.color = color;
+    }
+    public void ClearGrid()
+    {
+        LastTriggerGrid.color = new Color(0, 0, 0, 0);
     }
 
     public void UpdateMark(int count)
