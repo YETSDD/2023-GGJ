@@ -2,32 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockGrid : GridBase
+public class EndGrid : GridBase
 {
-    int count = 2;
-    public RockGrid(int x, int y) : base(x, y)
+    int count = 3;
+
+    public EndGrid(int x, int y) : base(x, y)
     {
         BaseColor = Color.gray;
-        AvailableTriggerTimes = 3;
         Movable = false;
+        AvailableTriggerTimes = 4;
     }
 
     public override void Trigger(EntityBase entity)
     {
         base.Trigger(entity);
+
         count--;
         Color.RGBToHSV(BaseColor, out var h, out var s, out var v);
-        v -= 0.2f;
+        v += 0.2f;
         v = Mathf.Clamp01(v);
         BaseColor = Color.HSVToRGB(h, s, v);
 
         if (count <= 0)
         {
-            Movable = true;
-        }
-        else
-        {
-            Movable = false;
+            if (entity is Player player)
+            {
+                if (player == GameManager.Instance.Player)
+                {
+                    player.Rooted = true;
+                    GameManager.Instance.NewGeneration(this);
+                }
+
+            }
         }
     }
 }

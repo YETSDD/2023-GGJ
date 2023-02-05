@@ -8,7 +8,8 @@ public enum Direction
     Right,
     Left,
     Up,
-    Down
+    Down,
+    None
 }
 public class ChooseList : MonoBehaviour, IController
 {
@@ -57,7 +58,7 @@ public class ChooseList : MonoBehaviour, IController
     private void OnRollOver()
     {
         var sprite = selecting.GetComponent<SpriteRenderer>();
-        if (sprite != null) { sprite.ChangeV(50); }
+        if (sprite != null) { sprite.ChangeV(1); }
     }
 
     private void OnRollOut()
@@ -65,7 +66,7 @@ public class ChooseList : MonoBehaviour, IController
         if (selecting != null)
         {
             var sprite = selecting.GetComponent<SpriteRenderer>();
-            if (sprite != null) { sprite.ChangeV(-50); }
+            if (sprite != null) { sprite.ChangeV(0.5f); }
         }
     }
 
@@ -106,12 +107,26 @@ public class ChooseList : MonoBehaviour, IController
         Controller.SwitchTo(ControllState.DirectArrow);
     }
 
-    private bool lookLock = false;
     private void Look()
     {
-        if (lookLock) { Debug.Log("Cannot Look"); return; }
-        //TODO
-        lookLock = true;
+        var player = GameManager.Instance.Player;
+        if (player.LookCount <= 0) { Debug.Log("Cannot Look"); return; }
+        player.LookCount = Mathf.Clamp(player.LookCount - 1, 0, 1);
+
+        var currentGrid = GameManager.Instance.Player.HeadGrid;
+        int currentX = currentGrid.PosX;
+        int currentY = currentGrid.PosY;
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                var grid = GridManager.Instance.GetGrid(currentX + i, currentY + j);
+                if (grid != null)
+                {
+                    grid.Visible = true;
+                }
+            }
+        }
         GameManager.Instance.NextRound();
     }
 }

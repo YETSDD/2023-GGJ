@@ -19,7 +19,6 @@ public class GridVisualizer : MonoBehaviour
 
     public void Show(GridBase grid)
     {
-
         Color.RGBToHSV(grid.BaseColor, out var h, out var s, out var v);
         if (!grid.Visible)
         {
@@ -32,7 +31,9 @@ public class GridVisualizer : MonoBehaviour
         //}
         if (grid.Owner != null)
         {
-            //‘⁄EntityBase¿Ôª≠
+            h = 0;
+            s = 0;
+            v = 0.5f;
         }
         else
         {

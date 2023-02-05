@@ -10,6 +10,9 @@ public class VisualizeManager : MonoBehaviour
     public static VisualizeManager Instance;
     public GameObject GridObject;
     public GameObject BodyObject;
+    public GameObject LineObject;
+    public GameObject HeadObject;
+
     public Transform GridGeneratePoint;
     public Transform BodyGeneratePoint;
 
@@ -45,7 +48,9 @@ public class VisualizeManager : MonoBehaviour
     public void UpdateEntity()
     {
         bodyPool.ForEach(item => item.SetActive(false));
-        foreach (var entity in GameManager.Instance.AllEntities)
+        linePool.ForEach(item => item.SetActive(false));
+        headPool.ForEach(item => item.SetActive(false));
+        foreach (var entity in GameManager.Instance.AllPlayer)
         {
             var head = entity.Body.Head;
             //判断成环 TODO
@@ -66,15 +71,50 @@ public class VisualizeManager : MonoBehaviour
                         if (InScreen(node.Data))
                         {
                             var worldPos = GridManager.Instance.GetPos(node.Data);
-                            var body = GetBodyObject();
-                            body.transform.position = worldPos;
+
                             //转向 
                             var angle = node.GetDirection();
                             if (angle == -1)
                             {
-                                //特殊处理 用圆形？TODO
+                                //特殊处理 用圆形
+                                var headObj = GetHeadObject();
+                                headObj.transform.position = worldPos;
                             }
-                            body.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+                            else
+                            {
+                                var body = GetBodyObject();
+                                body.transform.position = worldPos;
+                                body.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+                                if (!entity.Alive)
+                                {
+                                    body.GetComponent<SpriteRenderer>().color = Color.black;
+                                }
+                                else
+                                {
+                                    body.GetComponent<SpriteRenderer>().color = Color.green;
+                                }
+                            }
+
+                            foreach (var pre in node.Pres)
+                            {
+                                if (pre.Data != null && InScreen(pre.Data))
+                                {
+                                    var line = GetLineObject().GetComponent<LineRenderer>();
+                                    line.positionCount = 2;
+                                    var start = GridManager.Instance.GetPos(pre.Data);
+                                    line.SetPositions(new Vector3[2] { start, worldPos });
+                                    if (!entity.Alive)
+                                    {
+                                        line.startColor = Color.black;
+                                    }
+                                    else
+                                    {
+                                        line.startColor = Color.green;
+
+                                    }
+                                }
+                            }
+
                         }
 
                     }
@@ -115,6 +155,13 @@ public class VisualizeManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ClearAll()
+    {
+        bodyPool.ForEach(item => item.SetActive(false));
+        linePool.ForEach(item => item.SetActive(false));
+        headPool.ForEach(item => item.SetActive(false));
     }
 
     private bool InScreen(GridBase grid)
@@ -189,6 +236,44 @@ public class VisualizeManager : MonoBehaviour
     {
         var obj = GameObject.Instantiate(BodyObject, BodyGeneratePoint);
         bodyPool.Add(obj);
+        return obj;
+    }
+    #endregion
+    #region headPool
+    private List<GameObject> headPool = new List<GameObject>();
+    private GameObject GetHeadObject()
+    {
+        var result = headPool.Find(item => !item.activeInHierarchy);
+        if (result == null)
+        {
+            result = CreateHeadObject();
+        }
+        result.SetActive(true);
+        return result;
+    }
+    private GameObject CreateHeadObject()
+    {
+        var obj = GameObject.Instantiate(HeadObject, BodyGeneratePoint);
+        headPool.Add(obj);
+        return obj;
+    }
+    #endregion
+    #region linePool
+    private List<GameObject> linePool = new List<GameObject>();
+    private GameObject GetLineObject()
+    {
+        var result = linePool.Find(item => !item.activeInHierarchy);
+        if (result == null)
+        {
+            result = CreateLineObject();
+        }
+        result.SetActive(true);
+        return result;
+    }
+    private GameObject CreateLineObject()
+    {
+        var obj = GameObject.Instantiate(LineObject, BodyGeneratePoint);
+        linePool.Add(obj);
         return obj;
     }
     #endregion

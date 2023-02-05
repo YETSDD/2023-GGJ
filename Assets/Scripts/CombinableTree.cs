@@ -23,4 +23,16 @@ public class CustomNode<T>
         next.Pres.Add(this);
         Next = next;
     }
+
+    //其实可能成环
+    public CustomNode<T> Find(T data)
+    {
+        if (Data.Equals(data)) return this;
+        foreach (var pre in Pres)
+        {
+            var result = pre.Find(data);
+            if(result !=null) return result;
+        }
+        return null;
+    }
 }

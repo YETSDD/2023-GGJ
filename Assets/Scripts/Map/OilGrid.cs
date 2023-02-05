@@ -11,6 +11,12 @@ public class OilGrid : GridBase
     public override void Trigger(EntityBase entity)
     {
         base.Trigger(entity);
-
+        entity.Life += 5;
+        //遇到火直接爆炸游戏结束
+        entity.RemainChanceToDie--;
+        if (entity.RemainChanceToDie <= 0)
+        {
+            entity.RemainChanceToDie = 1;
+        }
     }
 }

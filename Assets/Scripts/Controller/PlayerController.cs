@@ -54,17 +54,17 @@ public class PlayerController : MonoBehaviour
 
     public void Handle(Direction direct)
     {
-        currentController.Handle(direct);
+        currentController?.Handle(direct);
     }
 
     public void Confirm()
     {
-        currentController.Confirm();
+        currentController?.Confirm();
     }
 
     public void SwitchTo(ControllState state)
     {
-        Debug.Log($"[{state.ToString()}]");
+        //Debug.Log($"[{state.ToString()}]");
         this.state = state;
         if (currentController != null)
         {
@@ -89,9 +89,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void MoveTo(Vector2Int vec)
+    public void MoveTo()
     {
-        Vector3 vector = (Vector2)vec;
-        gameObject.transform.position += vector;
+        Vector3 headPos = GridManager.Instance.GetPos(GameManager.Instance.Player.HeadGrid);
+        Vector3 directToMove = headPos - gameObject.transform.position;
+        gameObject.transform.position += directToMove;
     }
+
 }

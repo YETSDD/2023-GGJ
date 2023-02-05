@@ -26,7 +26,7 @@ public class AgentManager
     public void Initialize()
     {
         Controllers.Clear();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < GameManager.Instance.AgentCount; i++)
         {
             var chooseGrid = GridManager.Instance.GetRandomGeneratePoint();
             Controllers.Add(new AgentController(chooseGrid));
@@ -54,5 +54,10 @@ public class AgentManager
                 controller.Act();
             }
         }
+    }
+
+    public void ClearAll()
+    {
+        Controllers.Clear();
     }
 }

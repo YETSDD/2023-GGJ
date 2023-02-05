@@ -22,7 +22,8 @@ public class AgentController
             }
             else
             {
-                if (grid.CanMove())
+                //不能吃玩家,不能吃自己
+                if (grid.CanTrigger() && grid.Owner != Player && grid.Owner != GameManager.Instance.Player)
                 {
                     canMoveDirection.Add(pair.Key);
                     continue;
@@ -33,6 +34,7 @@ public class AgentController
         var random = Random.Range(0, canMoveDirection.Count);
         if (canMoveDirection.Count == 0)
         {
+            Debug.Log($"{Player.HeadGrid.PosX},{Player.HeadGrid.PosY} Stuck");
             Player.Alive = false;
             return;
         }

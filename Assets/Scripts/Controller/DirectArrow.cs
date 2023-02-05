@@ -44,8 +44,7 @@ public class DirectArrow : MonoBehaviour, IController
             }
             else
             {
-                //TODO ≥‘»À
-                if (!grid.CanMove())
+                if (!grid.CanTrigger() || grid.Owner == GameManager.Instance.Player)
                 {
                     cancelDirection.Add(pair.Key);
                     continue;
@@ -62,6 +61,11 @@ public class DirectArrow : MonoBehaviour, IController
         {
             ArrowObject[cancel].SetActive(false);
         }
+        if (cancelDirection.Contains(currentDirection))
+        {
+            currentDirection = Direction.None;
+        }
+        OnRollOver();
     }
     public void OnExit()
     {
@@ -72,24 +76,43 @@ public class DirectArrow : MonoBehaviour, IController
     }
     public void Handle(Direction direct)
     {
+        OnRollOut();
         currentDirection = direct;
+        OnRollOver();
     }
 
     public void Confirm()
     {
-        if (!cancelDirection.Contains(currentDirection))
+        OnRollOut();
+        if (currentDirection != Direction.None && !cancelDirection.Contains(currentDirection))
         {
             TryMoveTo(currentDirection);
+            Controller.SwitchTo(ControllState.None);
         }
-
-        Controller.SwitchTo(ControllState.ChooseList);
-
+        else
+        {
+            Controller.SwitchTo(ControllState.ChooseList);
+        }
     }
 
+    private void OnRollOver()
+    {
+        if (currentDirection != Direction.None)
+        {
+            ArrowObject[currentDirection].GetComponent<SpriteRenderer>().ChangeV(1);
+        }
+    }
+
+    private void OnRollOut()
+    {
+        if (currentDirection != Direction.None)
+        {
+            ArrowObject[currentDirection].GetComponent<SpriteRenderer>().ChangeV(0.5f);
+        }
+    }
     private void TryMoveTo(Direction direct)
     {
         var player = GameManager.Instance.Player;
-        var vec = GridManager.Instance.DirectVector[direct];
         //var currentGrid = player.Body.Head.Data;
         //var currentX = currentGrid.PosX;
         //var currentY = currentGrid.PosY;
@@ -104,7 +127,7 @@ public class DirectArrow : MonoBehaviour, IController
 
         if (moveSucess)
         {
-            Controller.MoveTo(vec);
+            Controller.MoveTo();
         }
 
         GameManager.Instance.NextRound();

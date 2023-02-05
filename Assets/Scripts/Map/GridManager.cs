@@ -12,7 +12,9 @@ public enum GridType
     /// <summary>
     /// 答辩
     /// </summary>
-    Manure
+    Manure,
+    Eye,
+    End
 }
 public class GridManager
 {
@@ -54,7 +56,7 @@ public class GridManager
             var line = new List<GridBase>();
             for (int j = 0; j < Width; j++)
             {
-                line.Add(new GridBase(j, i));
+                line.Add(RandomGrid(j, i));
             }
             Map.Add(line);
         }
@@ -62,12 +64,39 @@ public class GridManager
 
     private GridBase RandomGrid(int x, int y)
     {
-        var random = Random.Range(0, 6);
-        switch (random)
+        var posibility = GameManager.Instance.GenerateModels;
+        int total = 0;
+        posibility.ForEach(item => total += item.Weight);
+        var random = Random.Range(0, total);
+        GridType choose = GridType.Soil;
+        int value = 0;
+        for (int i = 0; i < posibility.Count; i++)
         {
+            var model = posibility[i];
+            if (value + model.Weight < random)
+            {
+                value += model.Weight;
+            }
+            else
+            {
+                choose = model.GridType;
+                break;
+            }
 
         }
-        return null;
+
+        switch (choose)
+        {
+            case GridType.Soil: return new SoilGrid(x, y);
+            case GridType.Water: return new WaterGrid(x, y);
+            case GridType.Fire: return new FireGrid(x, y);
+            case GridType.Rock: return new RockGrid(x, y);
+            case GridType.Oil: return new OilGrid(x, y);
+            case GridType.Manure: return new ManureGrid(x, y);
+            case GridType.Eye: return new EyeGrid(x, y);
+            case GridType.End: return new EndGrid(x, y);
+        }
+        return new SoilGrid(x, y);
     }
     /// <summary>
     /// 距离中心点的坐标
@@ -109,4 +138,10 @@ public class GridManager
         }
         return result;
     }
+}
+[System.Serializable]
+public class GenerateModel
+{
+    public GridType GridType;
+    public int Weight;
 }

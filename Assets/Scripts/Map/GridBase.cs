@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class GridBase
 {
+    public int AvailableTriggerTimes = 1;
     public EntityBase Owner = null;
     public int PosX;
     public int PosY;
@@ -22,10 +23,28 @@ public class GridBase
     public bool Movable = true;
     public bool CanMove()
     {
-        return Movable && Owner == null;
+        return Movable;
+    }
+    private bool canTrigger = true;
+    public bool CanTrigger()
+    {
+        return canTrigger;
     }
     public virtual void Trigger(EntityBase entity)
     {
+        AvailableTriggerTimes = AvailableTriggerTimes - 1 < 0 ? 0 : AvailableTriggerTimes - 1;
         Visible = true;
+        if (entity == GameManager.Instance.Player)
+        {
+            Debug.Log($"Trigger {this.GetType().Name}");
+        }
+    }
+
+    public virtual void MoveIn(EntityBase entity)
+    {
+        if (entity == GameManager.Instance.Player)
+        {
+            Debug.Log($"MoveIn {this.GetType().Name}");
+        }
     }
 }
